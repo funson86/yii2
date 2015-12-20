@@ -16,14 +16,14 @@
 Входные скрипты в основном делают следующую работу:
 
 * Объявляют глобальные константы;
-* Регистрируют загрузчик классов [Composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Регистрируют загрузчик классов [Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Подключают файл класса [[Yii]];
 * Загружают конфигурацию приложения;
 * Создают и конфигурируют объект [приложения](structure-applications.md);
 * Вызывают метод [[yii\base\Application::run()]] приложения для обработки входящего запроса.
 
 
-## Веб приложения <a name="web-applications"></a>
+## Веб приложения <span id="web-applications"></span>
 
 Ниже представлен код входного скрипта для [базового шаблона приложения](start-installation.md).
 
@@ -47,7 +47,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 
-## Консольные приложения <a name="console-applications"></a>
+## Консольные приложения <span id="console-applications"></span>
 
 Ниже представлен аналогичный код входного скрипта консольного приложения:
 
@@ -64,10 +64,6 @@ $config = require(__DIR__ . '/../config/web.php');
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-// fcgi не имеет констант STDIN и STDOUT, они определяются по умолчанию
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
-
 // регистрация загрузчика классов Composer
 require(__DIR__ . '/vendor/autoload.php');
 
@@ -83,7 +79,7 @@ exit($exitCode);
 ```
 
 
-## Объявление констант <a name="defining-constants"></a>
+## Объявление констант <span id="defining-constants"></span>
 
 Входные скрипты являются наилучшим местом для объявления глобальных констант. Yii поддерживают следующие три константы:
 

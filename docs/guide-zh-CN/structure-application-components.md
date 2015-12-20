@@ -1,7 +1,7 @@
 应用组件
 ======================
 
-应用主体是 [服务定位器](concept-service-locator.md)，它部署一组提供各种不同功能的 *应用组件* 来处理请求。
+应用主体是[服务定位器](concept-service-locator.md)，它部署一组提供各种不同功能的 *应用组件* 来处理请求。
 例如，`urlManager`组件负责处理网页请求路由到对应的控制器。`db`组件提供数据库相关服务等等。
 
 在同一个应用中，每个应用组件都有一个独一无二的 ID 用来区分其他应用组件，你可以通过如下表达式访问应用组件。
@@ -11,12 +11,11 @@
 ```
 
 例如，可以使用 `\Yii::$app->db` 来获取到已注册到应用的 [[yii\db\Connection|DB connection]]，
-使用 `\Yii::$app->cache` 来获取到已注册到应用的 [[yii\caching\Cache|primary cache]]。 
+使用 `\Yii::$app->cache` 来获取到已注册到应用的 [[yii\caching\Cache|primary cache]]。
 
 第一次使用以上表达式时候会创建应用组件实例，后续再访问会返回此实例，无需再次创建。
 
-应用组件可以是任意对象，可以在 [应用主体配置](structure-applications.md#application-configurations) 
-配置 [[yii\base\Application::components]] 属性 .
+应用组件可以是任意对象，可以在 [应用主体配置](structure-applications.md#application-configurations)配置 [[yii\base\Application::components]] 属性 .
 例如：
 
 ```php
@@ -41,11 +40,11 @@
 ]
 ```
 
-> 补充：请谨慎注册太多应用组件，应用组件就像全局变量，使用太多可能加大测试和维护的难度。
+> Info: 请谨慎注册太多应用组件，应用组件就像全局变量，使用太多可能加大测试和维护的难度。
   一般情况下可以在需要时再创建本地组件。
 
 
-## 引导启动组件 <a name="bootstrapping-components"></a>
+## 引导启动组件 <span id="bootstrapping-components"></span>
 
 上面提到一个应用组件只会在第一次访问时实例化，如果处理请求过程没有访问的话就不实例化。
 有时你想在每个请求处理过程都实例化某个组件即便它不会被访问，
@@ -56,6 +55,7 @@
 ```php
 [
     'bootstrap' => [
+        // 将 log 组件 ID 加入引导让它始终载入
         'log',
     ],
     'components' => [
@@ -67,7 +67,7 @@
 ```
 
 
-## 核心应用组件 <a name="core-application-components"></a>
+## 核心应用组件 <span id="core-application-components"></span>
 
 Yii 定义了一组固定ID和默认配置的 *核心* 组件，例如 [[yii\web\Application::request|request]] 组件
 用来收集用户请求并解析 [路由](runtime-routing.md)；

@@ -13,7 +13,7 @@ use yii\base\InvalidConfigException;
 
 /**
  * ArrayFixture represents arbitrary fixture that can be loaded from PHP files.
- * 
+ *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */
@@ -30,6 +30,7 @@ class ArrayFixture extends Fixture implements \IteratorAggregate, \ArrayAccess, 
      * to be returned by [[getData()]]. You can set this property to be false to prevent loading any data.
      */
     public $dataFile;
+
 
     /**
      * Loads the fixture.

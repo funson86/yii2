@@ -5,8 +5,119 @@ Upgrading Instructions for Yii Framework v2
 
 The following upgrading instructions are cumulative. That is,
 if you want to upgrade from version A to version C and there is
-version B between A and C, you need to following the instructions
+version B between A and C, you need to follow the instructions
 for both A and B.
+
+Make sure you have global install of latest version of composer asset plugin:
+
+```
+php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
+```
+
+Upgrade from Yii 2.0.6
+----------------------
+
+* Added new requirement: ICU Data version >= 49.1. Please, ensure that your environment has ICU data installed and
+up to date to prevent unexpected behavior or crashes.
+
+ > Tip: Use Yii2 Requirements checker for easy and fast check. Look for `requirements.php` in root of Basic and Advanced
+ templates (howto-comment is in head of the script).
+* The signature of `yii\helpers\BaseInflector::transliterate()` was changed. The method is now public and has an
+extra optional parameter `$transliterator`.
+* In `yii\web\UrlRule` the `pattern` matching group names are being replaced with the placeholders on class
+initialization to support wider range of allowed characters. Because of this change:
+  - You are required to flush your application cache to remove outdated `UrlRule` serialized objects.
+  See the [Cache Flushing Guide](http://www.yiiframework.com/doc-2.0/guide-caching-data.html#cache-flushing)
+  - If you implement `parseRequest()` or `createUrl()` and rely on parameter names, call `substitutePlaceholderNames()`
+  in order to replace temporary IDs with parameter names after doing matching.
+* The context of `yii.confirm` JavaScript function was changed from `yii` object to the DOM element which triggered
+the event.
+  - If you overrode the `yii.confirm` function and accessed the `yii` object through `this`, you must access it
+with global variable `yii` instead.
+* Traversable objects are now formatted as arrays in XML response to support SPL objects and Generators. Previous
+  behavior could be turned on by setting `XmlResponseFormatter::$useTraversableAsArray` to `false`.
+* If you've implemented `yii\rbac\ManagerInterface` you need to implement additional method `getUserIdsByRole($roleName)`.
+* If you're using ApcCache with APCu, set `useApcu` to `true` in the component config.
+
+Upgrade from Yii 2.0.5
+----------------------
+  
+* The signature of the following methods in `yii\console\controllers\MessageController` has changed. They have an extra parameter `$markUnused`.
+  - `saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages, $markUnused)`
+  - `saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)`
+  - `saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)`
+  - `saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused)`
+
+Upgrade from Yii 2.0.4
+----------------------
+
+Upgrading from 2.0.4 to 2.0.5 does not require any changes.
+
+Upgrade from Yii 2.0.3
+----------------------
+
+* Updated dependency to `cebe/markdown` to version `1.1.x`.
+  If you need stick with 1.0.x, you can specify that in your `composer.json` by
+  adding the following line in the `require` section:
+  
+  ```json
+  "cebe/markdown": "~1.0.0",
+  ```
+
+Upgrade from Yii 2.0.2
+----------------------
+
+Starting from version 2.0.3 Yii `Security` component relies on OpenSSL crypto lib instead of Mcrypt. The reason is that
+Mcrypt is abandoned and isn't maintained for years. Therefore your PHP should be compiled with OpenSSL support. Most
+probably there's nothing to worry because it is quite typical.
+
+If you've extended `yii\base\Security` to override any of the config constants you have to update your code:
+
+    - `MCRYPT_CIPHER` — now encoded in `$cipher` (and hence `$allowedCiphers`).
+    - `MCRYPT_MODE` — now encoded in `$cipher` (and hence `$allowedCiphers`).
+    - `KEY_SIZE` — now encoded in `$cipher` (and hence `$allowedCiphers`).
+    - `KDF_HASH` — now `$kdfHash`.
+    - `MAC_HASH` — now `$macHash`.
+    - `AUTH_KEY_INFO` — now `$authKeyInfo`.
+
+Upgrade from Yii 2.0.0
+----------------------
+
+* Upgraded Twitter Bootstrap to [version 3.3.x](http://blog.getbootstrap.com/2014/10/29/bootstrap-3-3-0-released/).
+  If you need to use an older version (i.e. stick with 3.2.x) you can specify that in your `composer.json` by
+  adding the following line in the `require` section:
+  
+  ```json
+  "bower-asset/bootstrap": "3.2.*",
+  ```
+
+Upgrade from Yii 2.0 RC
+-----------------------
+
+* If you've implemented `yii\rbac\ManagerInterface` you need to add implementation for new method `removeChildren()`.
+
+* The input dates for datetime formatting are now assumed to be in UTC unless a timezone is explicitly given.
+  Before, the timezone assumed for input dates was the default timezone set by PHP which is the same as `Yii::$app->timeZone`.
+  This causes trouble because the formatter uses `Yii::$app->timeZone` as the default values for output so no timezone conversion
+  was possible. If your timestamps are stored in the database without a timezone identifier you have to ensure they are in UTC or
+  add a timezone identifier explicitly.
+  
+* `yii\bootstrap\Collapse` is now encoding labels by default. `encode` item option and global `encodeLabels` property were
+ introduced to disable it. Keys are no longer used as labels. You need to remove keys and use `label` item option instead.
+ 
+* The `yii\base\View::beforeRender()` and `yii\base\View::afterRender()` methods have two extra parameters `$viewFile`
+  and `$params`. If you are overriding these methods, you should adjust the method signature accordingly.
+  
+* If you've used `asImage` formatter i.e. `Yii::$app->formatter->asImage($value, $alt);` you should change it
+  to `Yii::$app->formatter->asImage($value, ['alt' => $alt]);`.
+
+* Yii now requires `cebe/markdown` 1.0.0 or higher, which includes breaking changes in its internal API. If you extend the markdown class
+  you need to update your implementation. See <https://github.com/cebe/markdown/releases/tag/1.0.0-rc> for details.
+  If you just used the markdown helper class there is no need to change anything.
+
+* If you are using CUBRID DBMS, make sure to use at least version 9.3.0 as the server and also as the PDO extension.
+  Quoting of values is broken in prior versions and Yii has no reliable way to work around this issue.
+  A workaround that may have worked before has been removed in this release because it was not reliable.
 
 
 Upgrade from Yii 2.0 Beta
@@ -16,7 +127,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:1.0.0-beta1"
+  php composer.phar global require "fxp/composer-asset-plugin:~1.0.0"
   ```
 
   You also need to add the following code to your project's `composer.json` file:
@@ -118,7 +229,7 @@ Upgrade from Yii 2.0 Beta
   ];
   ```
 
-  > Note: If you are using the `Advanced Application Template` you should not add this configuration to `common/config`
+  > Note: If you are using the `Advanced Project Template` you should not add this configuration to `common/config`
   or `console/config` because the console application doesn't have to deal with CSRF and uses its own request that
   doesn't have `cookieValidationKey` property.
 
@@ -172,6 +283,7 @@ new ones save the following code as `convert.php` that should be placed in the s
 
 * Static helper `yii\helpers\Security` has been converted into an application component. You should change all usage of
   its methods to a new syntax, for example: instead of `yii\helpers\Security::hashData()` use `Yii::$app->getSecurity()->hashData()`.
+  The `generateRandomKey()` method now produces not an ASCII compatible output. Use `generateRandomString()` instead.
   Default encryption and hash parameters has been upgraded. If you need to decrypt/validate data that was encrypted/hashed
   before, use the following configuration of the 'security' component:
 
@@ -179,12 +291,7 @@ new ones save the following code as `convert.php` that should be placed in the s
   return [
       'components' => [
           'security' => [
-              'cryptBlockSize' => 16,
-              'cryptKeySize' => 24,
               'derivationIterations' => 1000,
-              'deriveKeyStrategy' => 'hmac', // for PHP version < 5.5.0
-              //'deriveKeyStrategy' => 'pbkdf2', // for PHP version >= 5.5.0
-              'useDeriveKeyUniqueSalt' => false,
           ],
           // ...
       ],
@@ -246,7 +353,7 @@ new ones save the following code as `convert.php` that should be placed in the s
 
   - `asDate`
   - `asTime`
-  - `asDateTime`
+  - `asDatetime`
   - `asSize` has been split up into `asSize` and `asShortSize`
   - `asCurrency`
   - `asDecimal`

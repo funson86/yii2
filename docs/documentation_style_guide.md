@@ -27,6 +27,22 @@ Blocks use the Markdown `> Type: `. There are four block types:
 * `Info`, general information (an aside); not as strong as a "Note"
 * `Tip`, pro tips, extras, can be useful but may not be needed by everyone all the time
 
+The sentence after the colon should begin with a capital letter.
+
+When translating documentation, these Block indicators should not be translated.
+Keeps them intact as they are and only translate the block content.
+For translating the `Type` word, each guide translation should have a `blocktypes.json` file
+containing the translations. The following shows an example for german:
+
+```json
+{
+    "Warning:": "Achtung:",
+    "Note:": "Hinweis:",
+    "Info:": "Info:",
+    "Tip:": "Tipp:"
+}
+```
+
 ## References
 
 * Yii 2.0 or Yii 2 (not Yii2 or Yii2.0)

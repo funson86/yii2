@@ -8,7 +8,9 @@
 namespace yii\build\controllers;
 
 use Yii;
+use yii\base\Exception;
 use yii\console\Controller;
+use yii\helpers\ArrayHelper;
 
 /**
  * ReleaseController is there to help preparing releases
@@ -24,48 +26,54 @@ class ReleaseController extends Controller
      * Usage:
      *
      * ```
-     * ./build/build release/prepare 2.0.0-beta
+     * ./build/build release/prepare framework 2.0.0-beta
+     * ./build/build release/prepare redis 2.0.0-beta
      * ```
      *
      */
-    public function actionPrepare($version)
+    public function actionPrepare(array $what, $version)
     {
-        $this->closeChangelogs($version);
-        $this->composerSetStability($version);
-        $this->updateYiiVersion($version);
+        $this->resortChangelogs($what, $version);
+        $this->closeChangelogs($what, $version);
+        $this->composerSetStability($what, $version);
+        if (in_array('framework', $what)) {
+            $this->updateYiiVersion($version);
+        }
     }
 
     /**
      * Usage:
      *
      * ```
-     * ./build/build release/done 2.0.0-dev 2.0.0-rc
+     * ./build/build release/done framework 2.0.0-dev 2.0.0-rc
+     * ./build/build release/done redis 2.0.0-dev 2.0.0-rc
      * ```
      */
-    public function actionDone($devVersion, $nextVersion)
+    public function actionDone(array $what, $devVersion, $nextVersion)
     {
-        $this->openChangelogs($nextVersion);
-        $this->composerSetStability('dev');
-        $this->updateYiiVersion($devVersion);
+        $this->openChangelogs($what, $nextVersion);
+        $this->composerSetStability($what, 'dev');
+        if (in_array('framework', $what)) {
+            $this->updateYiiVersion($devVersion);
+        }
     }
 
-    protected function closeChangelogs($version)
+    protected function closeChangelogs($what, $version)
     {
         $v = str_replace('\\-', '[\\- ]', preg_quote($version, '/'));
         $headline = $version . ' ' . date('F d, Y');
         $this->sed(
             '/'.$v.' under development\n(-+?)\n/',
             $headline . "\n" . str_repeat('-', strlen($headline)) . "\n",
-            $this->getChangelogs()
+            $this->getChangelogs($what)
         );
     }
 
-    protected function openChangelogs($version)
+    protected function openChangelogs($what, $version)
     {
         $headline = "\n$version under development\n";
         $headline .= str_repeat('-', strlen($headline) - 2) . "\n\n";
-        $headline .= "- no changes in this release.\n";
-        foreach($this->getChangelogs() as $file) {
+        foreach($this->getChangelogs($what) as $file) {
             $lines = explode("\n", file_get_contents($file));
             $hl = [
                 array_shift($lines),
@@ -77,13 +85,114 @@ class ReleaseController extends Controller
         }
     }
 
-    protected function getChangelogs()
+    protected function resortChangelogs($what, $version)
     {
-        return array_merge([YII2_PATH . '/CHANGELOG.md'], glob(dirname(YII2_PATH) . '/extensions/*/CHANGELOG.md'));
+        foreach($this->getChangelogs($what) as $file) {
+            // split the file into relevant parts
+            list($start, $changelog, $end) = $this->splitChangelog($file, $version);
+            $changelog = $this->resortChangelog($changelog);
+            file_put_contents($file, implode("\n", array_merge($start, $changelog, $end)));
+        }
     }
 
-    protected function composerSetStability($version)
+    /**
+     * Extract changelog content for a specific version
+     */
+    protected function splitChangelog($file, $version)
     {
+        $lines = explode("\n", file_get_contents($file));
+
+        // split the file into relevant parts
+        $start = [];
+        $changelog = [];
+        $end = [];
+
+        $state = 'start';
+        foreach($lines as $l => $line) {
+            // starting from the changelogs headline
+            if (isset($lines[$l-2]) && strpos($lines[$l-2], $version) !== false &&
+                isset($lines[$l-1]) && strncmp($lines[$l-1], '---', 3) === 0) {
+                $state = 'changelog';
+            }
+            if ($state === 'changelog' && isset($lines[$l+1]) && strncmp($lines[$l+1], '---', 3) === 0) {
+                $state = 'end';
+            }
+            ${$state}[] = $line;
+        }
+        return [$start, $changelog, $end];
+    }
+
+    /**
+     * Ensure sorting of the changelog lines
+     */
+    protected function resortChangelog($changelog)
+    {
+        // cleanup whitespace
+        foreach($changelog as $i => $line) {
+            $changelog[$i] = rtrim($line);
+        }
+        $changelog = array_filter($changelog);
+
+        $i = 0;
+        ArrayHelper::multisort($changelog, function($line) use (&$i) {
+            if (preg_match('/^- (Chg|Enh|Bug)( #\d+(, #\d+)*)?: .+$/', $line, $m)) {
+                $o = ['Bug' => 'C', 'Enh' => 'D', 'Chg' => 'E'];
+                return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
+            }
+            return 'B' . $i++;
+        }, SORT_ASC, SORT_NATURAL);
+
+        // re-add leading and trailing lines
+        array_unshift($changelog, '');
+        $changelog[] = '';
+        $changelog[] = '';
+
+        return $changelog;
+    }
+
+    protected function getChangelogs($what)
+    {
+        $changelogs = [];
+        if (in_array('framework', $what)) {
+            $changelogs[] = $this->getFrameworkChangelog();
+        }
+
+        return array_merge($changelogs, $this->getExtensionChangelogs($what));
+    }
+
+    protected function getFrameworkChangelog()
+    {
+        return YII2_PATH . '/CHANGELOG.md';
+    }
+
+    protected function getExtensionChangelogs($what)
+    {
+        return array_filter(glob(dirname(YII2_PATH) . '/extensions/*/CHANGELOG.md'), function($elem) use ($what) {
+            foreach($what as $ext) {
+                if (strpos($elem, "extensions/$ext/CHANGELOG.md") !== false) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    protected function composerSetStability($what, $version)
+    {
+        $apps = [];
+        if (in_array('app-advanced', $what)) {
+            $apps[] = dirname(YII2_PATH) . '/apps/advanced/composer.json';
+        }
+        if (in_array('app-basic', $what)) {
+            $apps[] = dirname(YII2_PATH) . '/apps/basic/composer.json';
+        }
+        if (in_array('app-benchmark', $what)) {
+            $apps[] = dirname(YII2_PATH) . '/apps/benchmark/composer.json';
+        }
+        if (empty($apps)) {
+            return;
+        }
+
         $stability = 'stable';
         if (strpos($version, 'alpha') !== false) {
             $stability = 'alpha';
@@ -98,11 +207,7 @@ class ReleaseController extends Controller
         $this->sed(
             '/"minimum-stability": "(.+?)",/',
             '"minimum-stability": "' . $stability . '",',
-            [
-                dirname(YII2_PATH) . '/apps/advanced/composer.json',
-                dirname(YII2_PATH) . '/apps/basic/composer.json',
-                dirname(YII2_PATH) . '/apps/benchmark/composer.json',
-            ]
+            $apps
         );
     }
 

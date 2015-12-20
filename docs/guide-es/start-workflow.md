@@ -6,13 +6,13 @@ la URL `http://hostname/basic/web/index.php` o `http://hostname/index.php`, depe
 Esta sección será una introducción a la funcionalidad incluida de la aplicación, cómo se organiza el código,
 y cómo la aplicación maneja los requests en general.
 
-> Información: Por simplicidad, en el transcurso de este tutorial "Para Empezar", se asume que has definido `basic/web`
+> Info: Por simplicidad, en el transcurso de este tutorial "Para Empezar", se asume que has definido `basic/web`
   como el document root de tu servidor Web, y configurado la URL de acceso a tu aplicación para que sea `http://hostname/index.php`
   o similar.
   Dependiendo de tus necesidades, por favor ajusta dichas URLs.
 
 
-Funcionalidad <a name="functionality"></a>
+Funcionalidad <span id="functionality"></span>
 -------------
 
 La aplicación básica contiene 4 páginas:
@@ -32,7 +32,7 @@ Esta es la útil [herramienta de depuración](tool-debugger.md) provista por Yii
 tal como los mensajes de log, response status, las consultas ejecutadas a la base de datos, y más.
 
 
-Estructura de la aplicación <a name="application-structure"></a>
+Estructura de la aplicación <span id="application-structure"></span>
 ---------------------------
 
 Los archivos y directorios más importantes en tu aplicación son (asumiendo que la raíz de la aplicación es `basic`):
@@ -74,12 +74,12 @@ y la envía al resto de los elementos MVC. Los [widgets](structure-widgets.md) s
 para ayudar a construir elementos de interfáz complejos y dinámicos.
 
 
-Ciclo de Vida de una Petición (Request) <a name="request-lifecycle"></a>
+Ciclo de Vida de una Petición (Request) <span id="request-lifecycle"></span>
 ---------------------------------------
 
 El siguiente diagrama muestra cómo una aplicación maneja una petición.
 
-![Ciclo de Vida de un Request](images/application-lifecycle.png)
+![Ciclo de Vida de un Request](images/request-lifecycle.png)
 
 1. Un usuario realiza una petición al [script de entrada](structure-entry-scripts.md) `web/index.php`.
 2. El script de entrada carga la [configuración](concept-configurations.md) de la aplicación y crea

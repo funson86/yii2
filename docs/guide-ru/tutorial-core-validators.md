@@ -19,7 +19,7 @@ public function rules()
 
 Ниже мы опишем основные способы использования и свойства всех встроенных валидаторов.
 
-## [[yii\validators\BooleanValidator|boolean]] <a name="boolean"></a>
+## [[yii\validators\BooleanValidator|boolean]] <span id="boolean"></span>
 
 ```php
 [
@@ -37,11 +37,11 @@ public function rules()
 - `falseValue`: значение, соответствующее *false*. По умолчанию - `'0'`.
 - `strict`: должна ли проверка учитывать соответствие типов данных `trueValue` или `falseValue`. По умолчанию - `false`.
 
-> Примечание: Из-за того, что как правило данные, полученные из HTML-форм, представляются в виде строки, обычно вам стоит
+> Note: Из-за того, что как правило данные, полученные из HTML-форм, представляются в виде строки, обычно вам стоит
 оставить свойство [[yii\validators\BooleanValidator::strict|strict]] равным false.
 
 
-## [[yii\captcha\CaptchaValidator|captcha]] <a name="captcha"></a>
+## [[yii\captcha\CaptchaValidator|captcha]] <span id="captcha"></span>
 
 ```php
 [
@@ -59,7 +59,7 @@ public function rules()
   что означает, что *input* обязателен.
 
 
-## [[yii\validators\CompareValidator|compare]] <a name="compare"></a>
+## [[yii\validators\CompareValidator|compare]] <span id="compare"></span>
 
 ```php
 [
@@ -92,7 +92,7 @@ public function rules()
      * `<=`: проверяет, что валидируемое значение меньше или равно тому, с которым происходит сравнение.
 
 
-## [[yii\validators\DateValidator|date]] <a name="date"></a>
+## [[yii\validators\DateValidator|date]] <span id="date"></span>
 
 ```php
 [
@@ -110,7 +110,7 @@ public function rules()
   из строки даты/времени.
 
 
-## [[yii\validators\DefaultValueValidator|default]] <a name="default"></a>
+## [[yii\validators\DefaultValueValidator|default]] <span id="default"></span>
 
 ```php
 [
@@ -140,11 +140,11 @@ function foo($model, $attribute) {
 }
 ```
 
-> Информация: Как определить, является значение пустым или нет, более подробно описано в отдельной статье
+> Info: Как определить, является значение пустым или нет, более подробно описано в отдельной статье
   в секции [Пустые значения](input-validation.md#handling-empty-inputs).
 
 
-## [[yii\validators\NumberValidator|double]] <a name="double"></a>
+## [[yii\validators\NumberValidator|double]] <span id="double"></span>
 
 ```php
 [
@@ -160,7 +160,7 @@ function foo($model, $attribute) {
 - `min`: Нижний лимит (включительно) для значений. Если не установлен, валидатор не будет проверять нижний лимит.
 
 
-## [[yii\validators\EmailValidator|email]] <a name="email"></a>
+## [[yii\validators\EmailValidator|email]] <span id="email"></span>
 
 ```php
 [
@@ -178,7 +178,7 @@ function foo($model, $attribute) {
   IDN-валидации вам нужно установить и включить PHP расширение `intl`, иначе будет выброшено исключение.
 
 
-## [[yii\validators\ExistValidator|exist]] <a name="exist"></a>
+## [[yii\validators\ExistValidator|exist]] <span id="exist"></span>
 
 ```php
 [
@@ -222,13 +222,13 @@ function foo($model, $attribute) {
   их в `targetAttribute` как массив.
 
 
-## [[yii\validators\FileValidator|file]] <a name="file"></a>
+## [[yii\validators\FileValidator|file]] <span id="file"></span>
 
 ```php
 [
     // проверяет, что "primaryImage" - это загруженное изображение в формате PNG, JPG или GIF
     // размер файла должен быть меньше 1MB
-    ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
+    ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024],
 ]
 ```
 
@@ -238,7 +238,7 @@ function foo($model, $attribute) {
   строка, содержащая имена файловых расширений, разделенных пробелом или запятой (пр.: "gif, jpg").
   Имя расширения не чувствительно к регистру. По умолчанию - null, что значит, что все имена файловых расширений
   допустимы.
-- `mimeTypes`: список MIME-типов которые допустимы для загрузки. Это может быть или массив, или строка,
+- `mimeTypes`: список MIME-типов, которые допустимы для загрузки. Это может быть или массив, или строка,
   содержащая MIME-типы файлов, разделенные пробелом или запятой (пример: "image/jpeg, image/png").
   Имена mime-типов не чувствительны к регистру. По умолчанию - null, что значит, что допустимы все MIME-типы.
 - `minSize`: минимальный размер файла в байтах, разрешенный для загрузки. По умолчанию - null, что значит, что нет
@@ -255,7 +255,7 @@ function foo($model, $attribute) {
 [Загрузка файлов](input-file-upload.md) для более полного понимания загрузки и проверки файлов.
 
 
-## [[yii\validators\FilterValidator|filter]] <a name="filter"></a>
+## [[yii\validators\FilterValidator|filter]] <span id="filter"></span>
 
 ```php
 [
@@ -282,7 +282,7 @@ function foo($model, $attribute) {
 
 > Трюк: Если вы хотите удалить пробелы вокруг значений атрибута, вы можете использовать валидатор [trim](#trim).
 
-## [[yii\validators\ImageValidator|image]] <a name="image"></a>
+## [[yii\validators\ImageValidator|image]] <span id="image"></span>
 
 ```php
 [
@@ -304,7 +304,79 @@ function foo($model, $attribute) {
 - `maxHeight`: максимальная высота изображения. По умолчанию null, что значит, что нет верхнего лимита.
 
 
-## [[yii\validators\RangeValidator|in]] <a name="in"></a>
+## [[yii\validators\IpValidator|ip]] <span id="ip"></span>
+```php
+[
+    // проверяет, что "ip_address" - это валидный IPv4 или IPv6 адрес
+    ['ip_address', 'ip'],
+
+
+    // проверяет, что "ip_address" - это валидный IPv6 адрес или подсеть,
+    // значение будет развернуто в формат полной записи IPv6 адреса
+    ['ip_address', 'ip', 'ipv4' => false, 'subnet' => null, 'expandIPv6' => true],
+
+    // проверяет, что "ip_address" - это валидный IPv4 или IPv6 адрес,
+    // разрешает использования символа отрацания `!`
+    ['ip_address', 'ip', 'negation' => true],
+]
+```
+
+Этот валидатор проверяет, является ли входящее значение валидным IPv4/IPv6 адресом или подсетью.
+Он также может изменять значение атрибута, если включена нормализация или развертывание IPv6 адресов.
+
+Валидатор имеет такие свойства:
+
+- `ipv4`: может ли проверяемое значение быть IPv4 адрессом. По умолчанию true.
+- `ipv6`: может ли проверяемое значение быть IPv6 адрессом. По умолчанию true.
+- `subnet`: может ли проверяемое значение быть IP адресом с CIDR (подсетью), например `192.168.10.0/24`
+     * `true` - указание подсети обязательно;
+     * `false` - указание подсети запрещено;
+     * `null` - указание подсети возможно, но не обязательно.
+
+    По умолчанию false.
+- `normalize`: нормализировать ли проверяемый IP адрес без CIDR к IP адресу с наименьшим CIDR
+(32 для IPv4 или 128 для IPv6). Свойство действует только если `subnet` не установлен в `false`. Например:
+    * `10.0.1.5` будет приведен к `10.0.1.5/32`
+    * `2008:db0::1` будет приведен к `2008:db0::1/128`
+- `negation`: может ли проверяемое значение иметь символ отрицания `!` в начале, например `!192.168.0.1`.
+По умолчанию false.
+- `expandIPv6`: разворачивать ли IPv6 адрес в формат полной записи.
+Например, IPv6 адрес `2008:db0::1` будет развернут в `2008:0db0:0000:0000:0000:0000:0000:0001`. По умолчанию false.
+- `ranges`: массив IPv4 или IPv6 диапазонов, которые разрешены или запрещены.
+
+    Если свойство не установлено, все IP адреса разрешены. Иначе, правила будут проверяться последовательно до первого
+вхождения. IP адрес будет запрещен, если не подпадет ни под одно правило. Например:
+    ```php
+    [
+         'client_ip', 'ip', 'ranges' => [
+             '192.168.10.128'
+             '!192.168.10.0/24',
+             'any' // разрешает все остальные IP адреса
+         ]
+    ]
+    ```
+В этом примере, доступ разрешен для всех IPv4 и IPv6 адресов кроме подсети `192.168.10.0/24`.
+IPv4 адрес `192.168.10.128` также разрешен, так как находится перед запрещающим правилом.
+- `networks`: массив псевдониимов, которые могут быть использованы в `ranges`. Формат массива:
+    * ключ - имя псевдонима
+    * значение - массив строк. Строка может быть как диапазоном адресов, так и другим псведонимом. Строка может иметь
+    символ отрицания `!` в начале (не зависит от свойства `negation`).
+
+    Следующие псевдонимы определены по умолчанию:
+    
+    * `*`: `any`
+    * `any`: `0.0.0.0/0, ::/0`
+    * `private`: `10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, fd00::/8`
+    * `multicast`: `224.0.0.0/4, ff00::/8`
+    * `linklocal`: `169.254.0.0/16, fe80::/10`
+    * `localhost`: `127.0.0.0/8', ::1`
+    * `documentation`: `192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32`
+    * `system`: `multicast, linklocal, localhost, documentation`
+
+> Info: Этот валидатор стал доступным начиная с версии 2.0.7.
+
+
+## [[yii\validators\RangeValidator|in]] <span id="in"></span>
 
 ```php
 [
@@ -313,7 +385,7 @@ function foo($model, $attribute) {
 ]
 ```
 
-Этот валидатор проверяет, что вхоящее значение соответствует одному из значений, указанных в `range`.
+Этот валидатор проверяет, что входящее значение соответствует одному из значений, указанных в `range`.
 
 - `range`: список значений, с которыми будет сравниваться входящее значение.
 - `strict`: должно ли сравнение входящего значения со списком значений быть строгим (учитывать тип данных).
@@ -325,7 +397,7 @@ function foo($model, $attribute) {
   `range`.
 
 
-## [[yii\validators\NumberValidator|integer]] <a name="integer"></a>
+## [[yii\validators\NumberValidator|integer]] <span id="integer"></span>
 
 ```php
 [
@@ -340,7 +412,7 @@ function foo($model, $attribute) {
 - `min`: нижний лимит (включительно) для числа. Если не установлено, валидатор не будет проверять нижний лимит.
 
 
-## [[yii\validators\RegularExpressionValidator|match]] <a name="match"></a>
+## [[yii\validators\RegularExpressionValidator|match]] <span id="match"></span>
 
 ```php
 [
@@ -359,7 +431,7 @@ function foo($model, $attribute) {
    только если входящее значение НЕ совпадает с шаблоном.
 
 
-## [[yii\validators\NumberValidator|number]] <a name="number"></a>
+## [[yii\validators\NumberValidator|number]] <span id="number"></span>
 
 ```php
 [
@@ -374,7 +446,7 @@ function foo($model, $attribute) {
 - `min`: нижний лимит (включительно) для числа. Если не установлено, валидатор не будет проверять нижний лимит.
 
 
-## [[yii\validators\RequiredValidator|required]] <a name="required"></a>
+## [[yii\validators\RequiredValidator|required]] <span id="required"></span>
 
 ```php
 [
@@ -394,11 +466,11 @@ function foo($model, $attribute) {
   Если `requiredValue` установлено, сравнение между входящими данными и `requiredValue` будет также учитывать тип
   данных, если это свойство установлено в true.
 
-> Информация: как определить, является ли значение пустым или нет, подробнее рассказывается
+> Info: как определить, является ли значение пустым или нет, подробнее рассказывается
   в секции [Пустые значения](input-validation.md#handling-empty-inputs).
 
 
-## [[yii\validators\SafeValidator|safe]] <a name="safe"></a>
+## [[yii\validators\SafeValidator|safe]] <span id="safe"></span>
 
 ```php
 [
@@ -411,7 +483,7 @@ function foo($model, $attribute) {
 [безопасным атрибутом](structure-models.md#safe-attributes).
 
 
-## [[yii\validators\StringValidator|string]] <a name="string"></a>
+## [[yii\validators\StringValidator|string]] <span id="string"></span>
 
 ```php
 [
@@ -434,7 +506,7 @@ function foo($model, $attribute) {
   [[yii\base\Application::charset|charset]], которое по умолчанию установлено в `UTF-8`.
 
 
-## [[yii\validators\FilterValidator|trim]] <a name="trim"></a>
+## [[yii\validators\FilterValidator|trim]] <span id="trim"></span>
 
 ```php
 [
@@ -447,7 +519,7 @@ function foo($model, $attribute) {
 Помните, что если входящие данные являются массивом, то они будут проигнорированы этим валидатором.
 
 
-## [[yii\validators\UniqueValidator|unique]] <a name="unique"></a>
+## [[yii\validators\UniqueValidator|unique]] <span id="unique"></span>
 
 ```php
 [
@@ -490,7 +562,7 @@ function foo($model, $attribute) {
   где `$query` это объект [[yii\db\Query|Query]], который вы можете изменить в функции.
 
 
-## [[yii\validators\UrlValidator|url]] <a name="url"></a>
+## [[yii\validators\UrlValidator|url]] <span id="url"></span>
 
 ```php
 [
